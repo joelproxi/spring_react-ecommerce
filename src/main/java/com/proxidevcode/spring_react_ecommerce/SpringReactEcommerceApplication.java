@@ -18,7 +18,7 @@ public class SpringReactEcommerceApplication {
 		SpringApplication.run(SpringReactEcommerceApplication.class, args);
 	}
 
-	@Bean
+
 	CommandLineRunner runner(CategoryRepository categoryRepository){
 		return args -> {
 

@@ -11,6 +11,7 @@ import com.proxidevcode.spring_react_ecommerce.models.Category;
 import com.proxidevcode.spring_react_ecommerce.repositories.CategoryRepository;
 import com.proxidevcode.spring_react_ecommerce.services.CategoryService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,8 +28,8 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public CategoryResponse getCategoryDetail(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCategoryDetail'");
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Not found"));
+        return mapper.mapToDto(category);
     }
 
     @Override
