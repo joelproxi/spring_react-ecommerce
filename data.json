@@ -1,0 +1,45 @@
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane.doe@example.com",
+  "phone": "123456789",
+  "address": "456 Main St",
+  "orderProductRequests": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "price": 50.0
+    },
+    {
+      "productId": 2,
+      "quantity": 1,
+      "price": 30.0
+    }
+  ]
+}
+
+
+
+{
+  "id": "generated-order-id",
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane.doe@example.com",
+  "address": "456 Main St",
+  "orderProducts": [
+    {
+      "id": 1,
+      "productId": 1,
+      "productName": "Product 1",
+      "quantity": 2,
+      "price": 100.0
+    },
+    {
+      "id": 2,
+      "productId": 2,
+      "productName": "Product 2",
+      "quantity": 1,
+      "price": 30.0
+    }
+  ]
+}

@@ -1,6 +1,10 @@
 package com.proxidevcode.spring_react_ecommerce.services.impl;
 
 
+import com.proxidevcode.spring_react_ecommerce.dtos.PagedResponse;
+import com.proxidevcode.spring_react_ecommerce.exceptions.ResourceNotFoundException;
+import com.proxidevcode.spring_react_ecommerce.utils.AppConstants;
+import jakarta.persistence.Id;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +23,11 @@ import com.proxidevcode.spring_react_ecommerce.services.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
+import java.util.List;
+
+import static com.proxidevcode.spring_react_ecommerce.utils.AppConstants.*;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
@@ -26,16 +35,24 @@ public class ProductServiceImpl implements ProductService{
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Page<ProductResponse> getAllProducts(int page, int size) {
+    public PagedResponse<ProductResponse> getAllProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-       Page<Product> products = productRepository.findAll(pageable);
-       return products.map(ProductMapper::mapToDto);
+       Page<Product> productPage = productRepository.findAll(pageable);
+        List<Product> products = productPage.getContent().isEmpty() ?
+                Collections.emptyList() : productPage.getContent();
+
+       return PagedResponse.<ProductResponse>builder()
+               .last(productPage.isLast())
+               .first(productPage.isFirst())
+               .content(products.stream().map(ProductMapper::mapToDto).toList())
+               .totalPages(productPage.getTotalPages())
+               .build();
     }
 
     @Override
     public ProductResponse createProduct(ProductRequest dto) {
         Category category  = categoryRepository.findById(dto.getCategoryId())
-            .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+            .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, dto.getCategoryId()));
         Product product = ProductMapper.mapToEntity(dto, category);
         Product savedProduct = productRepository.save(product);
         return ProductMapper.mapToDto(savedProduct);
@@ -43,29 +60,44 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponse updateProduct(long id, ProductRequest dto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateProduct'");
+       Product existingProduct = productRepository.findById(id)
+       .orElseThrow(() -> new ResourceNotFoundException(PRODUCT, ID, id ));
+       existingProduct.setName(dto.getName());
+       existingProduct.setDescription(dto.getDescription());
+       existingProduct.setPrice(dto.getPrice());
+       existingProduct.setQuantity(dto.getQuantity());
+       Product savedProduct = productRepository.save(existingProduct);
+       return ProductMapper.mapToDto(savedProduct);
     }
 
     @Override
     public void productDelete(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'productDelete'");
+       Product product = productRepository.findById(id)
+       .orElseThrow(() -> new ResourceNotFoundException(PRODUCT, ID, id ));
+       productRepository.delete(product);
     }
 
     @Override
     public ProductResponse getProduct(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getProduct'");
+        Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(PRODUCT, ID, id ));
+        return ProductMapper.mapToDto(product);
     }
 
     @Override
-    public Page<ProductResponse> getProductsByCategory(long id, int page, int size) {
+    public PagedResponse<ProductResponse> getProductsByCategory(long id, int page, int size) {
         Category category  = categoryRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Category not found"));
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC);
-        Page<Product> products = productRepository.findProductByCategory_Id(id, pageable);
-        return products.map(ProductMapper::mapToDto);
+        .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, id ));
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "name");
+        Page<Product> productPage = productRepository.findProductByCategory_Id(id, pageable);
+        List<Product> products = productPage.getContent().isEmpty() ?
+                Collections.emptyList() : productPage.getContent();
+        return PagedResponse.<ProductResponse>builder()
+                .last(productPage.isLast())
+                .first(productPage.isFirst())
+                .content(products.stream().map(ProductMapper::mapToDto).toList())
+                .totalPages(productPage.getTotalPages())
+                .build();
     }
     
 }

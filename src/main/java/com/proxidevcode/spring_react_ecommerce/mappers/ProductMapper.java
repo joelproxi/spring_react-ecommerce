@@ -10,6 +10,9 @@ import com.proxidevcode.spring_react_ecommerce.models.Product;
 public class ProductMapper {
     
     public static ProductResponse mapToDto(Product entity){
+        if(entity == null){
+            throw new NullPointerException("entity can not be null");
+        }
         CategoryResponse  categoryResponse = new CategoryResponse(
             entity.getCategory().getId(), entity.getCategory().getName()
             );

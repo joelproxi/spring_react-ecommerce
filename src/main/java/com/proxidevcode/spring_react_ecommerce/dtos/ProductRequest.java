@@ -1,6 +1,5 @@
 package com.proxidevcode.spring_react_ecommerce.dtos;
 
-import java.util.Locale.Category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +18,4 @@ public class ProductRequest {
     private Double price;
     private Integer quantity;
     private Long categoryId;
-    
 }

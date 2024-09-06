@@ -31,7 +31,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
-    @Lob
+   
     @Column(columnDefinition = "TEXT")
     private String description;
     private Double price;
