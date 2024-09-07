@@ -1,0 +1,10 @@
+
+services:
+  postgresql-db:
+    container_name: postgresql
+    image: postgres:16
+    restart: always
+    ports:
+      - 5433:5432
+    volumes:
+      - postgresql_data
