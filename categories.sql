@@ -1,0 +1,10 @@
+insert into categories (id, name) values (1, 'Music');
+insert into categories (id, name) values (2, 'Toys');
+insert into categories (id, name) values (3, 'Electronics');
+insert into categories (id, name) values (4, 'Automotive');
+insert into categories (id, name) values (5, 'Computers');
+insert into categories (id, name) values (6, 'Electronics');
+insert into categories (id, name) values (7, 'Clothing');
+insert into categories (id, name) values (8, 'Outdoors');
+insert into categories (id, name) values (9, 'Clothing');
+insert into categories (id, name) values (10, 'Industrial');
